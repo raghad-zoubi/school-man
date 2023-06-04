@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Absence;
+use App\Models\Subjects;
 use Illuminate\Database\Seeder;
 
-class AbsenceSeeder extends Seeder
+class SubjectSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,8 +14,7 @@ class AbsenceSeeder extends Seeder
      */
     public function run()
     {
-
-        Absence::factory()->count(10)->create();
+        Subjects::factory()->count(10)->create();
 
     }
 }

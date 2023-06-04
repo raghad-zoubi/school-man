@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Students;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ComplaintFactory extends Factory
@@ -14,7 +15,8 @@ class ComplaintFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'text'=>$this->faker->text(),
+            'student_id'=>Students::factory(),
         ];
     }
 }

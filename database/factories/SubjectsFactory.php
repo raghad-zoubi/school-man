@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class Follow-up-typeFactory extends Factory
+class SubjectsFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,7 +14,7 @@ class Follow-up-typeFactory extends Factory
     public function definition()
     {
         return [
-            //
+          'name'=>$this->faker->name(),
         ];
     }
 }
