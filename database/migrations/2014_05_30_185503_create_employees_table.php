@@ -24,9 +24,9 @@ class CreateEmployeesTable extends Migration
             $table->string('nationality');
             $table->integer('idNumber');
             $table->string('familyStatus');
-            $table->string('husbandName');
-            $table->string('husbandWork');
-            $table->integer('childrenNumber');
+            $table->string('husbandName')->nullable();
+            $table->string('husbandWork')->nullable();
+            $table->integer('childrenNumber')->default(0);
             $table->string('address');
             $table->integer('landPhone')->nullable();
             $table->integer('mobilePhone')->nullable();
