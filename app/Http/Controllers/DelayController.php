@@ -6,12 +6,49 @@ use App\Models\Delay;
 use Illuminate\Http\Request;
 
 class DelayController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+{//عرض التاخيرات من قبل صاحبها
+    public function index_student()
+    {
+        $all= Delay::where('student_id', auth()->user()->id)
+            ->count();
+        $absm= Delay::where('student_id', auth()->user()->id)
+            ->where('reason','!=',NULL)
+            ->count();
+        $absunm= Delay::where('student_id', auth()->user()->id)
+            ->where('reason',NULL)
+            ->count();
+        return response()->json([
+            'reason' => $absm,
+            'unreason'=>$absunm,
+            'allday' => $all,
+            'statusCode'=>200
+
+        ]);
+
+    }
+    //عرض تفاصيل التاخيرات من قبل صاحبها
+    public function show_student($kind)
+    {
+        if($kind=='reason'){
+            $absm= Delay::where('student_id', auth()->user()->id)
+                ->where('reason','!=',NULL)
+                ->get();
+            return response()->json([
+                'reason' => $absm,
+                'statusCode'=>200
+
+            ]);}
+        else if($kind=='unreason'){
+            $absunm= Delay::where('student_id', auth()->user()->id)
+                ->where('reason',NULL)
+                ->get();
+            return response()->json([
+                'unreason'=>$absunm,
+                'statusCode'=>200  ]);
+        }
+
+
+    }
     public function index()
     {
         //

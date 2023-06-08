@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Student_time;
+use App\Models\Students;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PermissionFactory extends Factory
@@ -17,6 +18,8 @@ class PermissionFactory extends Factory
         return [
 
             'reason' => $this->faker->paragraph(),
-            'student_time_id' => Student_time::factory()];
+            'semester'=>$this->faker->title(),
+            'date'=>$this->faker->dateTimeThisYear(),
+            'student_id'=>Students::factory(),];
     }
 }

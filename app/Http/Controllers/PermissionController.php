@@ -7,11 +7,34 @@ use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    //عرض الاذونات من قبل صاحبها
+
+    public function index_student()
+    {
+        $per= Permission::where('student_id', auth()->user()->id)
+            ->count();
+
+        return response()->json([
+            'permission' => $per,
+
+            'statusCode'=>200
+
+        ]);
+
+    }
+    //عرض تفاصيل الاذن من قبل صاحبها
+    public function showd_student()
+    {
+
+
+        $per= Permission::where('student_id', auth()->user()->id)
+            ->get();
+        return response()->json([
+            'permission'=>$per,
+            'statusCode'=>200  ]);
+    }
+
     public function index()
     {
         //

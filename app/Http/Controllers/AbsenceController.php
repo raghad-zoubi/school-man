@@ -7,11 +7,49 @@ use Illuminate\Http\Request;
 
 class AbsenceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    //عرض غيايات من قبل صاحبها
+    public function index_student()
+    {
+        $all= Absence::where('student_id', auth()->user()->id)
+            ->count();
+        $absm= Absence::where('student_id', auth()->user()->id)
+            ->where('reason','!=',NULL)
+            ->count();
+        $absunm= Absence::where('student_id', auth()->user()->id)
+            ->where('reason',NULL)
+            ->count();
+        return response()->json([
+            'reason' => $absm,
+            'unreason'=>$absunm,
+            'allday' => $all,
+            'statusCode'=>200
+
+        ]);
+
+    }
+    //عرض تفاصيل الغياب من قبل صاحبها
+    public function show_student($kind)
+    {
+        if($kind=='reason'){
+            $absm= Absence::where('student_id', auth()->user()->id)
+                ->where('reason','!=',NULL)
+                ->get();
+            return response()->json([
+                'reason' => $absm,
+                'statusCode'=>200
+
+            ]);}
+        else if($kind=='unreason'){
+            $absunm= Absence::where('student_id', auth()->user()->id)
+                ->where('reason',NULL)
+                ->get();
+            return response()->json([
+                'unreason'=>$absunm,
+                'statusCode'=>200  ]);
+        }
+
+
+    }
     public function index()
     {
         //

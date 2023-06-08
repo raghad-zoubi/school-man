@@ -69,7 +69,7 @@ class StudentsController extends Controller
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
-       $password = Str::random(5);
+        $password = Str::random(7);
         $student = Students::query()->create([
             'name' => $request->name,
             'fatherName' =>  $request->fatherName,
@@ -93,7 +93,8 @@ class StudentsController extends Controller
             'result'=>$request->result,
             'percentage'=>$request->percentage,
             'managementNotes'=>$request->managementNotes,
-            'password'=> encrypt($password),
+            'password'=>($password)
+
         ]);
         $tokenResult = $student->createToken("API TOKEN")->plainTextToken;
 
@@ -104,7 +105,7 @@ class StudentsController extends Controller
         return response()->json($data, 200);
 
     }
-    public function login(Request $request)
+    public function login_student(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'password' => 'required',
@@ -113,62 +114,28 @@ class StudentsController extends Controller
             return response()->json(['message'=>$validator->errors()->all()], Response::HTTP_UNPROCESSABLE_ENTITY);
 
         }
-        $o= encrypt($request->password);
+        //  $pass=Crypt::encrypt($request->password);Crypt::decrypt($y->password);
 
-        $credentials = request(  [ $request->password]);
-      // dd( $o);
-//dd($credentials );
-        if (!Auth::attempt($credentials )) {
+        $y=Students::where('password',$request->password)->first();
 
-            throw new AuthenticationException();
-        }
-        $student = $request->user();
-        //dd($student);
-        $tokenResult = $student->createToken("API TOKEN")->plainTextToken;
-
-      //  $data["user"] = $student;
-        $data["token_type"] = 'Bearer';
-        $data["access_token"] = $tokenResult;
-
-        return response()->json($data, 200);
-
-
-    }
-    function  LoginEmployeeOrSpecialist(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'password' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['message'=>$validator->errors()->all()], Response::HTTP_UNPROCESSABLE_ENTITY);
-
-        }
-       $pass=encrypt($request->password);
-        //   $y=Students::where('password',$request->password)->first();
-       $y=Students::where('password',encrypt($request->password))->exists();
-      // dd($y);
         if($y)
         {
-            $tokenResult = $y->createToken("API TOKEN")->plainTextToken;
-
+            $tokenResult = $y->createToken('ProductsTolken')->plainTextToken;
 
             return response()->json([
                 'message' => ' successfully',
+                'name'=>$y->name,
                 'token' => $tokenResult,
+                'statusCode'=>200
+
             ]);
-            // return $this->sendResponse([new EmployeeResource($user)], "login " . $request->role . " successfuly") ;
         }
-        return response()->json(['message'=>'yyyy'] );
+        return response()->json(['message'=>'Unauthenticated',
+            'statusCode'=>200 ] );
+
+
     }
 
-    ///عرض جميع الموظفين ف
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Students  $students
-     * @return \Illuminate\Http\Response
-     */
     public function show(Students $students)
     {
         //

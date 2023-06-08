@@ -7,11 +7,15 @@ use Illuminate\Http\Request;
 
 class NotesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    //عرض ملاحظاتي
+    public function show_students($type)
+    {
+        $notes= Notes::where('student_id', auth()->user()->id)->
+        where('typeNote',$type)->get();
+        return response()->json($notes, 200);
+
+    }
     public function index()
     {
         //

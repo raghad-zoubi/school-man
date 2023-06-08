@@ -38,7 +38,7 @@ class CreateStudentsTable extends Migration
             $table->double('result')->nullable();
             $table->decimal('percentage')->nullable();
             $table->string('managementNotes')->nullable();
-            $table->string('password');
+            $table->string('password')->unique();
 
             $table->timestamps();
         });

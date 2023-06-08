@@ -17,9 +17,9 @@ class CreateDelaysTable extends Migration
             $table->id();
             $table->string('reason')->nullable();
             $table->string('duration');
-
-            $table->foreignId('student_time_id')->constrained('student_times')->cascadeOnDelete();
-
+            $table->string('semester');
+            $table->date('date');
+            $table->foreignId('student_id')->constrained('students')->cascadeOnDelete();
             $table->timestamps();
         });
     }

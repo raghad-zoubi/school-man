@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Student_time;
+use App\Models\Students;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AbsenceFactory extends Factory
@@ -16,7 +17,9 @@ class AbsenceFactory extends Factory
     {
         return [
             'reason'=>$this->faker->text(),
-            'student_time_id'=>Student_time::factory(),
+            'semester'=>$this->faker->title(),
+            'date'=>$this->faker->dateTimeThisYear(),
+            'student_id'=>Students::factory(),
         ];
     }
 }
