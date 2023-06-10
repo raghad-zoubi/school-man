@@ -15,8 +15,8 @@ class CreateAbsencesTable extends Migration
     {
         Schema::create('absences', function (Blueprint $table) {
             $table->id();
+            $table->boolean('typeAbsence')->default(0);
             $table->string('reason')->nullable();
-
             $table->string('semester');
             $table->date('date');
 

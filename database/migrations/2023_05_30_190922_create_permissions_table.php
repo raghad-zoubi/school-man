@@ -16,13 +16,10 @@ class CreatePermissionsTable extends Migration
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
             $table->string('person')->nullable();
-
-
             $table->string('semester');
             $table->date('date');
 
             $table->foreignId('student_id')->constrained('students')->cascadeOnDelete();
-
             $table->timestamps();
         });
     }

@@ -17,7 +17,7 @@ class PermissionFactory extends Factory
     {
         return [
 
-            'reason' => $this->faker->paragraph(),
+            'person' => $this->faker->paragraph(),
             'semester'=>$this->faker->title(),
             'date'=>$this->faker->dateTimeThisYear(),
             'student_id'=>Students::factory(),];

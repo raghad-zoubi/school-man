@@ -4,10 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 class Delay extends Model
 {
-
-
     use HasFactory;
     protected $table = 'delays';
     protected $primaryKey = 'id';
@@ -22,13 +21,12 @@ class Delay extends Model
     ];
     protected $hidden = [
         'created_at',
-        'updated_at  ',
+        'updated_at ',
     ];
 
     public function student()
     {
-        return $this->belongsTo(\App\Models\Students::class);
+        return $this->belongsTo(Students::class);
     }
-
 
 }

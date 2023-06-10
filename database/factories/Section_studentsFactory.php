@@ -2,10 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Sections;
 use App\Models\Students;
+use App\Models\Section_student;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class Student_timeFactory extends Factory
+class Section_studentsFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -15,9 +18,8 @@ class Student_timeFactory extends Factory
     public function definition()
     {
         return [
-
             'semester'=>$this->faker->title(),
-            'date'=>$this->faker->dateTimeThisYear(),
+            'sections_id'=>Sections::factory(),
             'student_id'=>Students::factory(),
         ];
     }

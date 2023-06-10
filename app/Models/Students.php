@@ -43,4 +43,12 @@ class Students extends Model
         'created_at',
         'updated_at	',
     ];
+    public function Student_times()
+    {
+        return $this->hasMany(Student_time::class, 'student_id');
+    }
+    public function Section_students()
+    {
+        return $this->hasMany(Section_student::class, 'student_id');
+    }
 }

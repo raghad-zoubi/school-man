@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Section_student;
 use Illuminate\Database\Seeder;
 
-class Section_studentSeeder extends Seeder
+class Section_studentsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,6 @@ class Section_studentSeeder extends Seeder
      */
     public function run()
     {
-        Section_student::factory()->count(20)->create();
-
+        Section_student::factory()->count(30)->create();
     }
 }
