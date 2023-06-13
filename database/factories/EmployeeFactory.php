@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Arr;
 
 class EmployeeFactory extends Factory
 {
@@ -34,7 +33,7 @@ class EmployeeFactory extends Factory
             'mobilePhone' => $this->faker->randomNumber(),
             'certificate' => $this->faker->paragraph(1,true),
             'jurisdiction' => $this->faker->paragraph(2,true),
-            'languages' => $this->faker->languageCode(),
+            'language' => $this->faker->languageCode(),
             'computerSkills' => $this->faker->paragraph(2,true),
             'otherSkills' => $this->faker->paragraph(2,true),
             'socialInsurance' => $this->faker->boolean(),
@@ -43,6 +42,7 @@ class EmployeeFactory extends Factory
             'interview' => $this->faker->dateTimeThisYear(),
             'workYouWish' => $this->faker->paragraph(2,true),
             'managementNotes' => $this->faker->paragraph(2,true),
+            'status' => $this->faker->numberBetween(1,0),
         ];
     }
 }

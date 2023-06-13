@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class User_roleFactory extends Factory
@@ -14,7 +16,9 @@ class User_roleFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'user_id' => User::factory(),
+            'role_id' => Role::factory(),
+
         ];
     }
 }
