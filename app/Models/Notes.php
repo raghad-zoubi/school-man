@@ -18,6 +18,7 @@ class Notes extends Model
     'date',
     'text',
     'student_id',
+    'subject_id',
 
 ];
     protected $hidden = [
@@ -28,5 +29,10 @@ class Notes extends Model
     public function student()
 {
     return $this->belongsTo(\App\Models\Students::class);
+}
+
+public function subject()
+{
+    return $this->belongsTo(\App\Models\subjects::class);
 }
 }

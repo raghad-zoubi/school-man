@@ -15,8 +15,9 @@ class CreateStudyProgramsTable extends Migration
     {
         Schema::create('study_programs', function (Blueprint $table) {
             $table->id();
-            $table->string('session');
-            $table->date('date');
+            $table->integer('session');
+            $table->set('day',['الخميس','الأربعاء','الثلاثاء','الاثنين','الأحد']);
+            //$table->date('date');
             $table->timestamps();
             $table->foreignId('section_id')->constrained('sections')->cascadeOnDelete();
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
