@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Marks;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class MarksController extends Controller
 {
@@ -47,6 +49,29 @@ class MarksController extends Controller
     public function show(Marks $marks)
     {
         //
+    }
+    public function show_student(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+
+            'id' => 'required',
+            'from' => 'date',
+            'to' => 'date'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['message'=>$validator->errors()->all()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+       // if($request->from==null&&$request->to==null)
+       $result=Marks::where('student_id', auth()->user()->id)->where('subject_id',$request->id)
+    //->where('','!=',NULL)
+        ->get();
+
+        return response()->json([
+            'result' => $result,
+            'statusCode'=>200
+
+        ]);
+
     }
 
     /**

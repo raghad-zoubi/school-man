@@ -2,19 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ads;
+use App\Models\Marks;
 use App\Models\Section_ads;
+use App\Models\Section_student;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class SectionAdsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware(["auth:sanctum"]);
+        //->except([]);
+        //->only([]);
+    }
+    public function show_student()
+    {
+
+$result1=Section_student::where('students_id', auth()->user()->id)->get()->first();
+$result2=Section_ads::with('ads')->
+where('sections_id','=',$result1->sections_id)
+            ->get();
+
+        return response()->json([
+            'result' => $result2,
+            'statusCode'=>200
+
+        ]);
+
+    }
+
     public function index()
     {
-        //
+
     }
 
     /**

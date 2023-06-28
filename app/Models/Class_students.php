@@ -18,8 +18,8 @@ class Class_students extends Model
         'created_at',
         'updated_at ',
     ];
-    public function sections()
-    {
-        return $this->hasMany(Sections::class,'class_student_id');
-    }
+//    public function sections()
+//    {
+//        return $this->hasMany(Sections::class,'class_student_id');
+//    }
 }

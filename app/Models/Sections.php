@@ -26,8 +26,24 @@ class Sections extends Model
     {
         return $this->hasMany(Section_student::class, 'sections_id');
     }
+
     public function classStudent()
     {
         return $this->belongsTo(Class_students::class);
+    }
+//    public function Section_ads()
+//    {
+//        return $this->hasMany(Section_ads::class, 'sections_id');
+//    }
+    public function sections_ads(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            Ads::class,
+            "section_ads",
+            "sections_id",
+            "ad_id",
+            "id",
+            "id",
+        );
     }
 }
