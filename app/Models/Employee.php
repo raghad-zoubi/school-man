@@ -58,5 +58,8 @@ class Employee extends Model
 
     ];
 
-
+    public function study_program()
+    {
+        return $this->hasMany(Study_program::class, 'employee_id');
+    }
 }

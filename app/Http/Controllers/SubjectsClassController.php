@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Section_ads;
+use App\Models\Section_student;
 use App\Models\Subjects_class;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SubjectsClassController extends Controller
 {
@@ -15,6 +18,25 @@ class SubjectsClassController extends Controller
     public function index()
     {
         //
+    }
+    public function show_student()
+    {
+
+        $result2= DB::table('section_students')//'Subjects_class')
+            ->join('sections', 'section_students.sections_id', '=', 'sections.id')
+            ->join('subjects_classes','sections.class_student_id','=','subjects_classes.class_student_id')
+            ->join('subjects','subjects_classes.subject_id','=','subjects.id')
+            ->where('section_students.students_id','=',auth()->user()->id)
+            ->select('subjects.*')
+            ->get();
+
+
+        return response()->json([
+            'result' => $result2,
+            'statusCode'=>200
+
+        ]);
+
     }
 
     /**

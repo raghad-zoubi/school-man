@@ -61,9 +61,10 @@ class MarksController extends Controller
         if ($validator->fails()) {
             return response()->json(['message'=>$validator->errors()->all()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-       // if($request->from==null&&$request->to==null)
-       $result=Marks::where('student_id', auth()->user()->id)->where('subject_id',$request->id)
-    //->where('','!=',NULL)
+     //   if($request->from==null&&$request->to==null)
+       $result=Marks::where('student_id','=', auth()->user()->id)
+       ->where('subject_id',$request->id)
+    -> whereBetween("date",[$request->from,$request->to])
         ->get();
 
         return response()->json([

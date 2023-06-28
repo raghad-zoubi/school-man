@@ -23,6 +23,7 @@ class Marks extends Model
         'id',
         'follow_up_type_id',
         'subject_id',
+        'date'
     ];
     protected $hidden = [
         'created_at',
