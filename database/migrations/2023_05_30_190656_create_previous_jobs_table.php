@@ -15,10 +15,10 @@ class CreatePreviousJobsTable extends Migration
     {
         Schema::create('previous_jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('workPlace');
-            $table->string('work');
-            $table->string('classesStudied');
-            $table->string('duration');
+            $table->string('workPlace')->nullable();
+            $table->string('work')->nullable();
+            $table->string('classesStudied')->nullable();
+            $table->string('duration')->nullable();
 
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
 

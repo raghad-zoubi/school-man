@@ -2,6 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Absence;
+use App\Models\Employee;
+use App\Models\Illness;
+use App\Models\Students;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,6 +18,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        Students::factory()->count(20)->create();
+        Absence::factory()->count(10)->create();
+        Illness::factory()->count(10)->create();
+        Employee::factory()->count(20)->create();
+        User::factory()->count(20)->create();
+
     }
 }

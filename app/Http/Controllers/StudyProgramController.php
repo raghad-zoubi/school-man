@@ -2,20 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Section_student;
 use App\Models\Study_program;
 use Illuminate\Http\Request;
 
 class StudyProgramController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         //
     }
+    public function show_student()
+    {
+
+        $result1=Section_student::where('students_id', auth()->user()->id)->get()->first();
+        $result2=Study_program::with('section')->
+        where('section_id','=',$result1->sections_id)
+            ->get();
+
+        return response()->json([
+            'result' => $result2,
+            'statusCode'=>200
+
+        ]);
+
+    }
+
 
     /**
      * Show the form for creating a new resource.

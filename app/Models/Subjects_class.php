@@ -26,6 +26,7 @@ public function subject()
 {
     return $this->belongsTo(\App\Models\Subjects::class);
 }
+
 public function class_student()
 {
     return $this->belongsTo(\App\Models\Class_students::class);

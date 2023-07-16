@@ -32,7 +32,7 @@ class CreateEmployeesTable extends Migration
             $table->integer('mobilePhone')->nullable();
             $table->string('certificate');
             $table->string('jurisdiction');
-            $table->string('languages')->nullable();
+            $table->string('language')->nullable();
             $table->string('computerSkills')->nullable();
             $table->string('otherSkills')->nullable();
             $table->boolean('socialInsurance');
@@ -41,6 +41,7 @@ class CreateEmployeesTable extends Migration
             $table->dateTime('interview');
             $table->string('workYouWish')->nullable();
             $table->string('managementNotes')->nullable();
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }
