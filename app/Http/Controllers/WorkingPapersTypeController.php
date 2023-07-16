@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Working_papers_type;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class WorkingPapersTypeController extends Controller
@@ -22,9 +23,26 @@ class WorkingPapersTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $validator=Validator::make($request->all(),[
+            'name'=>'required|max:191|string',
+        ]);
+        if($validator->fails()){
+            return $validator->errors();
+        }
+        else{
+            $name=$request->input('name');
+            $type=Working_papers_type::where('name',$name)->first();
+            if($type!=null){
+                return response()->json(['message'=>'this type was previously added'],400);
+            }
+
+            $new=Working_papers_type::create([
+                'name'=>$name,
+            ]);
+            return response()->json($new,200);
+        }
     }
 
     /**

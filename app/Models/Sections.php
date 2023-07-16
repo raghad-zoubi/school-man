@@ -30,4 +30,12 @@ class Sections extends Model
     {
         return $this->belongsTo(Class_students::class);
     }
+    public function Section_ads()
+    {
+        return $this->hasMany(Section_ads::class, 'sections_id');
+    }
+    public function workpapers_Section()
+    {
+        return $this->hasMany(Working_papers_section::class, 'section_id');
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Subjects;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SubjectsController extends Controller
 {
@@ -22,9 +23,19 @@ class SubjectsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $validator=Validator::make($request->all(),[
+            'name'=>'required|max:50|string',
+        ]);
+        if($validator->fails()){
+            return $validator->errors();
+        }
+        else{
+        $newuser=Subjects::create([
+            'name'=>$request->name,
+        ]);
+        return response()->json($newuser,200);}
     }
 
     /**

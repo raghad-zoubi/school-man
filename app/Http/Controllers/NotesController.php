@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notes;
+use App\Models\Students;
+use App\Models\Subjects;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class NotesController extends Controller
 {
@@ -26,9 +30,57 @@ class NotesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $validator=Validator::make($request->all(),[
+            'typeNote'=>'required|max:100|string',
+            'semester'=>'required|max:100|string',
+            'text'=>'required|max:250',
+            'date'=>'required|date',
+            'student'=>'required',
+            'subject'=>'required|max:50|string',
+        ]);
+        if($validator->fails()){
+            return $validator->errors();
+        }
+        else{
+            ////date check
+            $date=$request->input('date');
+            $today=Carbon::now();
+            $now=Carbon::parse($today);
+            $to=Carbon::parse($date);
+            $time=$to->diffInDays($now);
+            if($time> 0)
+            {
+                return response()->json(['message'=>'this is future history'],400);
+            }
+            if($time< -364)
+            {
+                return response()->json(['message'=>'wrong this history of a year ago'],400);
+            }
+            ///
+            $student=Students::where('name',$request->student)->first();
+            if($student==null)
+            {
+                return response()->json(['message'=>'error  student not found'],400);
+            }
+            ///
+            $subject=Subjects::where('name',$request->subject)->first();
+            if($subject==null)
+            {
+                return response()->json(['message'=>'error  subject not found'],400);
+            }
+            //
+            $new=Notes::create([
+                'typeNote'=>$request->input('typeNote'),
+                'semester'=>$request->input('semester'),
+                'text'=>$request->input('text'),
+                'date'=>$date,
+                'student_id'=>$student->id,
+                'subject_id'=>$subject->id,
+            ]);
+            return response()->json($new,200);
+        }
     }
 
     /**

@@ -39,7 +39,7 @@ class CreateStudentsTable extends Migration
             $table->decimal('percentage')->nullable();
             $table->string('managementNotes')->nullable();
             $table->string('password')->unique();
-
+            $table->foreignId('section_id')->constrained('sections')->nullable();
             $table->timestamps();
         });
     }

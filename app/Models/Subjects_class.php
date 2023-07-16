@@ -13,7 +13,7 @@ class Subjects_class extends Model
     public $timestamps = true;
     protected $fillable = [
         'highMark',
-        'highMark',
+        'lowMark',
         'subject_id',
         'class_student_id',
 ];
