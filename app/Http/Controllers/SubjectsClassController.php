@@ -1,15 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-<<<<<<< HEAD
+//<<<<<<< HEAD
 use App\Http\Controllers\SubjectsController;
 use App\Models\Class_students;
 use App\Models\Subjects;
-=======
+//=======
 
 use App\Models\Section_ads;
 use App\Models\Section_student;
->>>>>>> 42231069c138dd2b54d030622428f18629ccb4f5
+//>>>>>>> 42231069c138dd2b54d030622428f18629ccb4f5
 use App\Models\Subjects_class;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -30,19 +30,15 @@ class SubjectsClassController extends Controller
     {
 
         $result2= DB::table('section_students')//'Subjects_class')
-            ->join('sections', 'section_students.sections_id', '=', 'sections.id')
-            ->join('subjects_classes','sections.class_student_id','=','subjects_classes.class_student_id')
-            ->join('subjects','subjects_classes.subject_id','=','subjects.id')
-            ->where('section_students.students_id','=',auth()->user()->id)
-            ->select('subjects.*')
-            ->get();
+        ->join('sections', 'section_students.sections_id', '=', 'sections.id')
+        ->join('subjects_classes','sections.class_student_id','=','subjects_classes.class_student_id')
+        ->join('subjects','subjects_classes.subject_id','=','subjects.id')
+        ->where('section_students.students_id','=',auth()->user()->id)
+        ->select('subjects.*')
+        ->get();
 
-
-        return response()->json([
-            'result' => $result2,
-            'statusCode'=>200
-
-        ]);
+        return response()->json(
+            $result2);
 
     }
 

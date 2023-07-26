@@ -12,8 +12,12 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 
+
+
+
 class StudentsController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -123,8 +127,9 @@ class StudentsController extends Controller
             $tokenResult = $y->createToken('ProductsTolken')->plainTextToken;
 
             return response()->json([
-                'message' => ' successfully',
+                'message' => 'successfully',
                 'name'=>$y->name,
+                'id'=>$y->id,
                 'token' => $tokenResult,
                 'statusCode'=>200
 
@@ -135,6 +140,19 @@ class StudentsController extends Controller
 
 
     }
+
+     public function logout_student()
+     {
+
+         $result =Auth::user()->tokens()->delete();
+         if($result){
+             $response = response()->json('User logout successfully',200);
+         }
+
+         return $response;
+     }
+
+
 
     public function show(Students $students)
     {

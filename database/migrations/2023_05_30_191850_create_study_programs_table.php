@@ -17,7 +17,6 @@ class CreateStudyProgramsTable extends Migration
             $table->id();
             $table->integer('session');
             $table->set('day',['الخميس','الأربعاء','الثلاثاء','الاثنين','الأحد']);
-            //$table->date('date');
             $table->timestamps();
             $table->foreignId('section_id')->constrained('sections')->cascadeOnDelete();
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Section_ads;
+use App\Models\Subjects_class;
+use Illuminate\Support\Facades\DB;
 use App\Models\Section_student;
 use App\Models\Study_program;
 use Illuminate\Http\Request;
@@ -15,17 +18,21 @@ class StudyProgramController extends Controller
     }
     public function show_student()
     {
+        $result2= DB::table('section_students')
+        ->join('sections', 'section_students.sections_id', '=', 'sections.id')
+        ->join('study_programs','sections.id','=','study_programs.section_id')
+       ->join('subjects','study_programs.subject_id','=','subjects.id')
+        ->where('section_students.students_id','=',auth()->user()->id)
+        ->select('study_programs.session','study_programs.day','study_programs.id','subjects.name')
+        ->get();
 
-        $result1=Section_student::where('students_id', auth()->user()->id)->get()->first();
-        $result2=Study_program::with('section')->
-        where('section_id','=',$result1->sections_id)
-            ->get();
 
-        return response()->json([
-            'result' => $result2,
-            'statusCode'=>200
 
-        ]);
+        return response()->json(
+        $result2
+
+
+        );
 
     }
 
