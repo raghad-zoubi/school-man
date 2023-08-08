@@ -8,17 +8,12 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SectionAdsController;
 use App\Http\Controllers\StudentsController;
-<<<<<<< HEAD
-use App\Http\Controllers\NotesController;
 use App\Http\Controllers\SectionsController;
 //use App\Http\Controllers\SubjectsController;
 use App\Http\Controllers\SubjectsClassController;
 use App\Http\Controllers\WorkingPapersSectionController;
 use App\Http\Controllers\WorkingPapersTypeController;
-=======
 use App\Http\Controllers\StudyProgramController;
-use App\Http\Controllers\SubjectsClassController;
->>>>>>> 42231069c138dd2b54d030622428f18629ccb4f5
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -53,7 +48,6 @@ Route::group([
     'prefix' => 'student'
 ], function () {
 
-<<<<<<< HEAD
 //////////////
 Route::post('create_note',[NotesController::class,'create']);
 Route::post('create_section',[SectionsController::class,'create']);
@@ -67,7 +61,6 @@ Route::get('show_subjects',[SubjectsClassController::class,'show']);
 Route::delete('delet_subjectclass/{subjectclass_id}',[SubjectsClassController::class,'destroy']);
 Route::post('create_workpapers',[WorkingPapersSectionController::class,'create']);
 Route::post('create_workpapersType',[WorkingPapersTypeController::class,'create']);
-=======
 
     Route::post('/login', [StudentsController::class,'login_student']);
     Route::group([
@@ -125,4 +118,3 @@ Route::post('create_workpapersType',[WorkingPapersTypeController::class,'create'
 //  php artisan db:seed --class=class PreviousJobSeeder
 //php artisan db:seed --class=class NoteSeeder
 // studyprogram??
->>>>>>> 42231069c138dd2b54d030622428f18629ccb4f5
