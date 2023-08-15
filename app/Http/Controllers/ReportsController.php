@@ -23,9 +23,6 @@ class ReportsController extends Controller
 
         ]);
 
-
-
-
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
@@ -35,7 +32,7 @@ class ReportsController extends Controller
 
         ]);
 
-        return response()->json(['massage'=>$report,200]);
+        return response()->json([$report]);
     }
     public function show_student()
     {
@@ -43,12 +40,12 @@ class ReportsController extends Controller
 
         $report = Reports::where('students_id',auth()->user()->id)->get();
 
-      //  dd("oio");
+    
         return response()->json([
-            'massage'=>"succses",
-            'data'=>$report,
-            'Scode'=>200]
-        );
+  
+          $report,
+           
+       ]);
     }
 
 

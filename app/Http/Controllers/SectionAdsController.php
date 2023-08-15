@@ -3,34 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ads;
-use App\Models\Marks;
 use App\Models\Section_ads;
 use App\Models\Section_student;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class SectionAdsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(["auth:sanctum"]);
-        //->except([]);
-        //->only([]);
+       // $this->middleware(["auth:sanctum"]);
+
     }
-    public function show_student()
-    {
+    public function show_student($type)
+{
 
-$result1=Section_student::where('students_id', auth()->user()->id)->get()->first();
-$result2=Section_ads::with('ads')->
-where('sections_id','=',$result1->sections_id)
-            ->get();
+        if($type==1)
+            $result2=Ads::
+            where('type','=',$type)
+               ->get();
 
-        return response()->json([
-            'result' => $result2,
-            'statusCode'=>200
+else
+    $result2= DB::table('section_ads')
+        ->join('section_students', 'section_ads.sections_id', '=', 'section_students.sections_id')
+        ->join('sections', 'section_ads.sections_id', '=', 'sections.id')
+        ->join('ads','section_ads.ad_id','=','ads.id')
+        ->where('section_students.students_id','=',auth()->user()->id)
+        ->where('ads.type','=',$type)
+        ->select('section_ads.*','ads.*')
+        ->get();
 
-        ]);
+            return response()->json(
+                $result2,
+            );
 
     }
 

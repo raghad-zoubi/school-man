@@ -17,7 +17,9 @@ class NotesController extends Controller
     {
         $notes= Notes::where('student_id', auth()->user()->id)->
         where('typeNote',$type)->get();
-        return response()->json($notes, 200);
+
+        return response()->json($notes);
+
 
     }
     public function index()
@@ -79,6 +81,7 @@ class NotesController extends Controller
                 'student_id'=>$student->id,
                 'subject_id'=>$subject->id,
             ]);
+    
             return response()->json($new,200);
         }
     }

@@ -24,14 +24,17 @@ class DelayController extends Controller
             ->where('reason',NULL)
             ->count();
         return response()->json([
-            'reason' => $absm,
-            'unreason'=>$absunm,
-            'allday' => $all,
-            'statusCode'=>200
-
+            'excusedCount' => $absm,
+            'UnexcusedCount'=>$absunm,
+            'allCount' => $all,
+            'allDay'=>290
         ]);
-
     }
+      
+
+
+
+  
     //عرض تفاصيل التاخيرات من قبل صاحبها
     public function show_student($kind)
     {
@@ -39,18 +42,18 @@ class DelayController extends Controller
             $absm= Delay::where('student_id', auth()->user()->id)
                 ->where('reason','!=',NULL)
                 ->get();
-            return response()->json([
-                'reason' => $absm,
-                'statusCode'=>200
+            return response()->json(
+              $absm
+       
 
-            ]);}
+            );}
         else if($kind=='unreason'){
             $absunm= Delay::where('student_id', auth()->user()->id)
                 ->where('reason',NULL)
                 ->get();
-            return response()->json([
-                'unreason'=>$absunm,
-                'statusCode'=>200  ]);
+            return response()->json(
+              $absunm
+              );
         }
 
 

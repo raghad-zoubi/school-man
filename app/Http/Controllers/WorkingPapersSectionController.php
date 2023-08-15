@@ -9,25 +9,43 @@ use App\Models\Working_papers;
 use App\Models\Working_papers_section;
 use App\Models\Working_papers_type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class WorkingPapersSectionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    public function show_studen($type)
+    {
+//        ['name' => 'advices'],
+//        ['name' => 'records'],
+//        ['name' => 'testpaper'],
+//        ['name' => 'workpaper'],
+//        ['name' => 'text'],
+
+
+        $result2= DB::table('working_papers_sections')
+            ->join('section_students', 'working_papers_sections.section_id', '=', 'section_students.sections_id')
+            ->join('sections', 'working_papers_sections.section_id', '=', 'sections.id')
+            ->join('working_papers','working_papers_sections.working_papers_id','=','working_papers.id')
+            ->join('working_papers_types','working_papers.working_papers_type_id','=','working_papers_types.id')
+            ->where('section_students.students_id','=',auth()->user()->id)
+            ->where('working_papers_types.name','=',$type)
+            ->select('working_papers.*')
+            ->get();
+
+        return response()->json(
+            $result2,
+        );
+
+
+    }
+
+
     public function index()
     {
         //
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create(Request $request)
     {
         $validator=Validator::make($request->all(),[

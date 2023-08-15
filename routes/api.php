@@ -8,30 +8,11 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SectionAdsController;
 use App\Http\Controllers\StudentsController;
-<<<<<<< HEAD
-use App\Http\Controllers\NotesController;
-use App\Http\Controllers\SectionsController;
-//use App\Http\Controllers\SubjectsController;
-use App\Http\Controllers\SubjectsClassController;
-use App\Http\Controllers\WorkingPapersSectionController;
-use App\Http\Controllers\WorkingPapersTypeController;
-=======
 use App\Http\Controllers\StudyProgramController;
 use App\Http\Controllers\SubjectsClassController;
->>>>>>> 42231069c138dd2b54d030622428f18629ccb4f5
+use App\Http\Controllers\WorkingPapersSectionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
@@ -53,21 +34,6 @@ Route::group([
     'prefix' => 'student'
 ], function () {
 
-<<<<<<< HEAD
-//////////////
-Route::post('create_note',[NotesController::class,'create']);
-Route::post('create_section',[SectionsController::class,'create']);
-Route::get('show_class_sections',[SectionsController::class,'show']);
-Route::delete('delet_section/{section_id}',[SectionsController::class,'destroy']);
-Route::get('get_students',[SectionsController::class,'get_students_withoutSection']);
-Route::put('add_studentToSection',[SectionsController::class,'add_studentToSection']);
-//Route::post('create_subject',[SubjectsController::class,'create']);
-Route::post('create_subject_class',[SubjectsClassController::class,'create']);
-Route::get('show_subjects',[SubjectsClassController::class,'show']);
-Route::delete('delet_subjectclass/{subjectclass_id}',[SubjectsClassController::class,'destroy']);
-Route::post('create_workpapers',[WorkingPapersSectionController::class,'create']);
-Route::post('create_workpapersType',[WorkingPapersTypeController::class,'create']);
-=======
 
     Route::post('/login', [StudentsController::class,'login_student']);
     Route::group([
@@ -86,7 +52,8 @@ Route::post('create_workpapersType',[WorkingPapersTypeController::class,'create'
         Route::post('/show/mark', [MarksController::class, 'show_student']) ;//->middleware('auth:sanctum');;
         Route::get('/show/program', [StudyProgramController::class, 'show_student']) ;//->middleware('auth:sanctum');;
         Route::get('/show/subject', [SubjectsClassController::class, 'show_student']) ;//->middleware('auth:sanctum');;
-        Route::get('/show/ads', [SectionAdsController::class, 'show_student']) ;//->middleware('auth:sanctum');;
+        Route::get('/show/ads/{type}', [SectionAdsController::class, 'show_student']) ;//->middleware('auth:sanctum');;
+        Route::get('/show/workingpaper/{type}', [WorkingPapersSectionController::class, 'show_studen']) ;//->middleware('auth:sanctum');;
 
     });
 });
@@ -125,4 +92,3 @@ Route::post('create_workpapersType',[WorkingPapersTypeController::class,'create'
 //  php artisan db:seed --class=class PreviousJobSeeder
 //php artisan db:seed --class=class NoteSeeder
 // studyprogram??
->>>>>>> 42231069c138dd2b54d030622428f18629ccb4f5

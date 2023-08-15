@@ -27,14 +27,14 @@ class AbsenceController extends Controller
             ->where('reason',NULL)
             ->count();
         return response()->json([
-            'reason' => $absm,
-            'unreason'=>$absunm,
-            'allday' => $all,
-            'statusCode'=>200
-
+         
+            'excusedCount' => $absm,
+            'UnexcusedCount'=>$absunm,
+            'allCount' => $all,
+            'allDay'=>290
         ]);
 
-    }
+    }  
     //عرض تفاصيل الغياب من قبل صاحبها
     public function show_student($kind)
     {
@@ -42,18 +42,17 @@ class AbsenceController extends Controller
             $absm= Absence::where('student_id', auth()->user()->id)
                 ->where('reason','!=',NULL)
                 ->get();
-            return response()->json([
-                'reason' => $absm,
-                'statusCode'=>200
+            return response()->json(
+           $absm
+     
 
-            ]);}
+            );}
         else if($kind=='unreason'){
             $absunm= Absence::where('student_id', auth()->user()->id)
                 ->where('reason',NULL)
                 ->get();
-            return response()->json([
-                'unreason'=>$absunm,
-                'statusCode'=>200  ]);
+            return response()->json(
+             $absunm );
         }
 
 

@@ -7,33 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Section_ads extends Model
 {
-<<<<<<< HEAD
     use HasFactory;
-=======
 
-use HasFactory;
->>>>>>> 42231069c138dd2b54d030622428f18629ccb4f5
     protected $table = 'section_ads';
     protected $primaryKey = 'id';
     public $timestamps = true;
     protected $fillable = [
-<<<<<<< HEAD
         'sections_id',
         'ad_id',
-    ];
-
-=======
         'id',
-        'sections_id',
-        'ad_id',
+
     ];
->>>>>>> 42231069c138dd2b54d030622428f18629ccb4f5
     protected $hidden = [
         'created_at',
         'updated_at	',
     ];
-<<<<<<< HEAD
-=======
 
 
 
@@ -46,5 +34,4 @@ use HasFactory;
         return $this->belongsTo(Sections::class,"sections_id","id")->withDefault();
     }
 
->>>>>>> 42231069c138dd2b54d030622428f18629ccb4f5
 }

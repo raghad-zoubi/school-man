@@ -15,7 +15,8 @@ class Follow_up_type extends Model
     protected $primaryKey = 'id';
     public $timestamps = true;
     protected $fillable = [
-        'name'
+        'name',
+        'id'
     ];
     protected $hidden = [
         'created_at',

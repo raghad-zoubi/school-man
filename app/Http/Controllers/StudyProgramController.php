@@ -17,20 +17,26 @@ class StudyProgramController extends Controller
         //
     }
     public function show_student()
-    {
+    {   $lastUpdate =
+        DB::table('section_students')
+            ->join('sections', 'section_students.sections_id', '=', 'sections.id')
+            ->join('study_programs','sections.id','=','study_programs.section_id')
+            ->where('section_students.students_id','=',auth()->user()->id)
+            ->orderBy('study_programs.updated_at', 'desc')
+            ->select('study_programs.updated_at')
+            ->first()->updated_at;
+
         $result2= DB::table('section_students')
         ->join('sections', 'section_students.sections_id', '=', 'sections.id')
         ->join('study_programs','sections.id','=','study_programs.section_id')
        ->join('subjects','study_programs.subject_id','=','subjects.id')
         ->where('section_students.students_id','=',auth()->user()->id)
-        ->select('study_programs.session','study_programs.day','study_programs.id','subjects.name')
+        ->select('study_programs.session','study_programs.day','study_programs.id','subjects.name',$lastUpdate)
         ->get();
-
 
 
         return response()->json(
         $result2
-
 
         );
 

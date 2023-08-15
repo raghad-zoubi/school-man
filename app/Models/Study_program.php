@@ -17,10 +17,11 @@ class Study_program extends Model
         'section_id',
         'subject_id',
         'employee_id',
+         'created_at',
+    'updated_at  ',
 ];
     protected $hidden = [
-    'created_at',
-    'updated_at  ',
+   
 ];
 
 public function subject()

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Working_papers_section extends Model
 {
     use HasFactory;
-    protected $table = 'working_papers';
+    protected $table = 'working_papers_sections';
     protected $primaryKey = 'id';
     public $timestamps = true;
     protected $fillable = [
