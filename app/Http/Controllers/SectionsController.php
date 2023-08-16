@@ -159,7 +159,7 @@ class SectionsController extends Controller
                 return response()->json(['message'=>'wrong data'],400);
             }
 
-            $section=Sections::where('name',$request->input('subject'))->where('class_student_id',$class->id)->where('gender',$request->input('gender'))->first();
+            $section=Sections::where('name',$request->input('name'))->where('class_student_id',$class->id)->where('gender',$request->input('gender'))->first();
             if($section==null){
                 return response()->json(['message'=>'wrong data'],400);
             }
@@ -172,7 +172,7 @@ class SectionsController extends Controller
                     foreach ($students as $s)
                     {
                         $stud=Students::find($s);
-                    $stud->quantity=$section->id;
+                    $stud->section_id=$section->id;
                     $stud->save();
                 }
             }
