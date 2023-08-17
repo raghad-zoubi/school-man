@@ -112,6 +112,7 @@ class SubjectsClassController extends Controller
             $class=Class_students::find($one->class_student_id);
             $subject=Subjects::find($one->subject_id);
             $respon[]=([
+                'id'=>$one->id,
                 'class'=>$class->name,
                 'subject'=>$subject->name,
                 'highMark'=>$one->highMark,

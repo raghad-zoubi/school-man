@@ -48,19 +48,7 @@ Route::group([
     'prefix' => 'student'
 ], function () {
 
-//////////////
-Route::post('create_note',[NotesController::class,'create']);
-Route::post('create_section',[SectionsController::class,'create']);
-Route::get('show_class_sections',[SectionsController::class,'show']);
-Route::delete('delet_section/{section_id}',[SectionsController::class,'destroy']);
-Route::get('get_students',[SectionsController::class,'get_students_withoutSection']);
-Route::put('add_studentToSection',[SectionsController::class,'add_studentToSection']);
-//Route::post('create_subject',[SubjectsController::class,'create']);
-Route::post('create_subject_class',[SubjectsClassController::class,'create']);
-Route::get('show_subjects',[SubjectsClassController::class,'show']);
-Route::delete('delet_subjectclass/{subjectclass_id}',[SubjectsClassController::class,'destroy']);
-Route::post('create_workpapers',[WorkingPapersSectionController::class,'create']);
-Route::post('create_workpapersType',[WorkingPapersTypeController::class,'create']);
+
 
     Route::post('/login', [StudentsController::class,'login_student']);
     Route::group([
@@ -118,3 +106,22 @@ Route::post('create_workpapersType',[WorkingPapersTypeController::class,'create'
 //  php artisan db:seed --class=class PreviousJobSeeder
 //php artisan db:seed --class=class NoteSeeder
 // studyprogram??
+
+
+
+//////////////
+Route::post('create_note',[NotesController::class,'create']);
+Route::post('create_section',[SectionsController::class,'create']);
+Route::get('show_class_sections',[SectionsController::class,'show']);
+Route::delete('delet_section/{section_id}',[SectionsController::class,'destroy']);
+Route::get('get_students',[SectionsController::class,'get_students_withoutSection']);
+Route::put('add_studentToSection',[SectionsController::class,'add_studentToSection']);
+//Route::post('create_subject',[SubjectsController::class,'create']);
+Route::post('create_subject_class',[SubjectsClassController::class,'create']);
+Route::get('show_subjects',[SubjectsClassController::class,'show']);
+Route::delete('delet_subjectclass/{subjectclass_id}',[SubjectsClassController::class,'destroy']);
+Route::post('create_workpapers',[WorkingPapersSectionController::class,'create']);
+Route::post('create_workpapersType',[WorkingPapersTypeController::class,'create']);
+Route::post('create_program',[StudyProgramController::class,'create']);
+Route::get('show_program',[StudyProgramController::class,'show']);
+Route::delete('delet_program/{section_id}',[StudyProgramController::class,'destroy']);

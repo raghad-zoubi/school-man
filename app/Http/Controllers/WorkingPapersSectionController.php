@@ -72,7 +72,7 @@ class WorkingPapersSectionController extends Controller
           //      $section=json_decode($request['sections'],true);
                 foreach ($sections as $s)
                 {
-                    $section=Sections::where('name',$s)->first();
+                    $section=Sections::where('name',$s)->where('class_student_id',$clas->id)->where('gender',$request->input('gender'))->first();
                     $new_work_section=Working_papers_section::create([
                         'section_id'=>$section->id,
                         'working_papers_id'=>$new->id,
