@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Class_students;
 use App\Models\Subjects;
+use App\Models\Subjects_class;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,19 +25,19 @@ class SubjectsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create(string $name)
     {
-        $validator=Validator::make($request->all(),[
+       /* $validator=Validator::make($request->all(),[
             'name'=>'required|max:50|string',
         ]);
         if($validator->fails()){
             return $validator->errors();
         }
-        else{
+        else{*/
         $newuser=Subjects::create([
-            'name'=>$request->name,
+            'name'=>$name,
         ]);
-        return response()->json($newuser,200);}
+        return response()->json($newuser,200);
     }
 
     /**
@@ -55,10 +57,35 @@ class SubjectsController extends Controller
      * @param  \App\Models\Subjects  $subjects
      * @return \Illuminate\Http\Response
      */
-    public function show(Subjects $subjects)
+    public function show(Request $request)
     {
-        //
+        $validator=Validator::make($request->all(),[
+            'class'=>'required|max:191|string',
+        ]);
+        if($validator->fails()){
+            return $validator->errors();
+        }
+        else{
+        $class=Class_students::where('name',$request->input('class'))->first();
+        if($class==null){
+            return response()->json(['message'=>'wrong data'],400);
+        }
+
+        $all=Subjects_class::where('class_student_id',$class->id)->get();
+
+        foreach($all as $one){
+            $sub=Subjects::find($one->subject_id);
+                $respon[]=([
+                'id'=>$one->id,
+                'name'=>$sub->name,
+            ]);
+        }
+        if($respon==null){
+            return response()->json(['message'=>'there are no subject'],400);
+        }
+        return response()->json($respon,200);
     }
+}
 
     /**
      * Show the form for editing the specified resource.

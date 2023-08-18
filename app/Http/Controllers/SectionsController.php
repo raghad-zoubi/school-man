@@ -118,7 +118,7 @@ class SectionsController extends Controller
                 return response()->json(['message'=>'wrong data'],400);
             }
             $gen=$request->input('gender');
-            $all_suc=$class->sections;
+            $all_suc=Sections::where('class_student_id',$class->id)->get();
             $respon=null;
             foreach($all_suc as $one){
             if(strcmp($one->gender,$gen)==0){
@@ -207,7 +207,7 @@ class SectionsController extends Controller
             return response()->json('error section not fond',400);
         }
         ///delete section ads
-        $sectionAds=$section->Section_ads;
+        $sectionAds=Section_ads::where('sections_id',$section->id)->get();
         foreach($sectionAds as $one){
             $ads=Ads::find($one->ad_id);
             $num_sec_ads=$ads->section_ads->count();
@@ -227,7 +227,11 @@ class SectionsController extends Controller
             }
         }
         ///detach students from this section
-        ////
+        $sectionStud=$section->Section_students;
+        foreach($sectionStud as $one){
+            $one->section_id=null;
+            $one->save();
+        }
         ///delet section
         Sections::destroy($section->id);
         return response()->json('section deleted successfully',200);

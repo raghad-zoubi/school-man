@@ -62,9 +62,21 @@ class WorkingPapersTypeController extends Controller
      * @param  \App\Models\Working_papers_type  $working_papers_type
      * @return \Illuminate\Http\Response
      */
-    public function show(Working_papers_type $working_papers_type)
+    public function show()
     {
-        //
+        $all=Working_papers_type::all();
+        $respon=null;
+        foreach($all as $one){
+                $respon[]=([
+                'id'=>$one->id,
+                'name'=>$one->name,
+            ]);
+
+        }
+        if($respon==null){
+            return response()->json(['message'=>'there are no type'],400);
+        }
+        return response()->json($respon,200);
     }
 
     /**

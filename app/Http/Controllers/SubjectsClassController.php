@@ -73,7 +73,8 @@ class SubjectsClassController extends Controller
             $subject=Subjects::where('name',$request->input('subject'))->first();
             if($subject==null){
                 $SubjectsController=new SubjectsController();
-                $SubjectsController->create($request->input('subject'));
+                $sub=$request->input('subject');
+                $SubjectsController->create($sub);
                 $subject=Subjects::where('name',$request->input('subject'))->first();
             }
 

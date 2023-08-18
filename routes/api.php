@@ -9,7 +9,7 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SectionAdsController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SectionsController;
-//use App\Http\Controllers\SubjectsController;
+use App\Http\Controllers\SubjectsController;
 use App\Http\Controllers\SubjectsClassController;
 use App\Http\Controllers\WorkingPapersSectionController;
 use App\Http\Controllers\WorkingPapersTypeController;
@@ -125,3 +125,6 @@ Route::post('create_workpapersType',[WorkingPapersTypeController::class,'create'
 Route::post('create_program',[StudyProgramController::class,'create']);
 Route::get('show_program',[StudyProgramController::class,'show']);
 Route::delete('delet_program/{section_id}',[StudyProgramController::class,'destroy']);
+Route::get('get_subjectsList',[SubjectsController::class,'show']);
+Route::get('get_WorkingPapersTypeList',[WorkingPapersTypeController::class,'show']);
+
