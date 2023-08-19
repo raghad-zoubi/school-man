@@ -22,9 +22,9 @@ class Sections extends Model
         'created_at',
         'updated_at	',
     ];
-    public function Section_students()
+    public function students()
     {
-        return $this->hasMany(Section_student::class, 'sections_id');
+        return $this->hasMany(Sections::class, 'section_id');
     }
    public function study_program()
     {

@@ -38,7 +38,6 @@ class Students extends Model
         'percentage',
         'managementNotes',
         'password',
-        'section_id',
     ];
     protected $hidden = [
         'created_at',
@@ -52,9 +51,4 @@ class Students extends Model
     {
         return $this->hasMany(Section_student::class, 'student_id');
     }
-
-    public function section()
-{
-    return $this->belongsTo(\App\Models\Sections::class);
-}
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserRequest extends FormRequest
+class BudgetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,18 +24,15 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            'password' => ['required', 'min:8'],
-            'employee_id'=> ['required' ],
-            'role_id'=> ['required' ],
+            'file' => 'required|mimes:xls,xlsx'
         ];
     }
     public function messages()
     {
         return [
-            'password.required' => 'كلمة السر مطلوبة',
-            'password.min' => 'كلمة السر يجب أن تحتوي على 8 رموز',
-            'employee_id.required' => 'هذا الحقل مطلوب',
-            'role_id.required' => 'هذا الحقل مطلوب',
+            'file.required' => 'هذا الحقل مطلوب',
+            'file.mimes' => 'الرجاء ادخال ملف من نوع إكسل',
+
 
         ];
     }

@@ -27,14 +27,14 @@ class AbsenceController extends Controller
             ->where('reason',NULL)
             ->count();
         return response()->json([
-         
+
             'excusedCount' => $absm,
             'UnexcusedCount'=>$absunm,
             'allCount' => $all,
             'allDay'=>290
         ]);
 
-    }  
+    }
     //عرض تفاصيل الغياب من قبل صاحبها
     public function show_student($kind)
     {
@@ -44,7 +44,7 @@ class AbsenceController extends Controller
                 ->get();
             return response()->json(
            $absm
-     
+
 
             );}
         else if($kind=='unreason'){
@@ -59,17 +59,24 @@ class AbsenceController extends Controller
     }
 
     //maria------------------------------
-    public function index(Request $request)
+    public function indexAbsence( $idStudent)
     {
-        $student = Students::where([['name','=',$request->name],['fatherName','=',$request->fatherName]])->get()->first();
-        $date=Absence::where('student_id', '=', $student->id)->get()->first();
-        if($date==null){
+//        $student = Students::where('id',$idStudent)->get()->first();
+//        if(blank($student)){
+//            return response()->json([
+//                ['message' => 'طالب غير موجود']
+//            ]);
+//        }
+        $student=Absence::where('student_id', '=', $idStudent)->get();
+        if(blank($student)){
             return response()->json([
-                'message' =>  'لا يوجد غيابات',
+                ['message' =>  'لا يوجد غيابات'],
             ]);
         }
         Carbon::setLocale('ar');
-        $nameDate=Carbon::parse($date->date)->dayName;
+        foreach ($student as $record) {
+            $nameDate = Carbon::parse($record->date)->dayName;
+            $record->day = $nameDate;
 //        $MyOrder = DB::table('absences as a')
 //            ->join('student_times as s', 's.id', '=','a.student_time_id' )
 //            ->select('a.id', 'a.reason','a.student_time_id','s.semester', 's.date')
@@ -83,9 +90,9 @@ class AbsenceController extends Controller
 //            ]);
 //        }
 
-        $date->day = $nameDate;
+        }
 
-        return response()->json($date);
+        return response()->json($student, 200);
     }
 
     /**
@@ -106,30 +113,62 @@ class AbsenceController extends Controller
      */
 
     //maria-------------------------
-    public function store(Request $request)
+    public function storeAbsence(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required', 'string',
-            'fatherName' => 'required','string',
-            'typeAbsence' => 'required','boolean',
-            'semester' => 'required',
-            'reason' => 'string',
-            'date' => 'required','date'
+//            'name' => 'required', 'string',
+//            'nickname' => 'required', 'string',
+//            'fatherName' => 'required','string',
+//            'typeAbsence' => 'required','boolean',
+           'semester' => 'required',
+//            'reason' => 'string',
+//            'date' => 'required','date'
+               'rows'=>'required'
         ]);
         if ($validator->fails()) {
             return response()->json(['message'=>$validator->errors()->all()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        $student = Students::where([['name','=',$request->name],['fatherName','=',$request->fatherName]])->get()->first();
-        $absence= Absence::query()->create([
-            'semester' => $request->semester,
-            'date' =>  $request->date,
-            'student_id' => $student->id,
-            'typeAbsence' => $request->typeAbsence,
-            'reason' =>  $request->reason,
-
+        if(blank($request->semester))
+        {
+            return response()->json([
+                'statusCode'=>400,
+                'message'=>'الرجاء تعبئة الفصل',
+            ]);
+        }
+        if(blank($request->rows)) {
+            return response()->json([
+                'statusCode' => 400,
+                'message' => 'لايوجد علامات للاضافة',
+            ]);
+        }
+        foreach ($request->rows as $row) {
+            Absence::query()->create([
+                'semester' => $request->semester,
+                'typeAbsence' => $row['check'],
+                'reason' =>$row['reason'],
+                'date' =>now()->format('Y-m-d'),
+                'student_id' => $row['student_id']
+            ]);
+        }
+ //        $student = Students::where([['name','=',$request->name],['fatherName','=',$request->fatherName]])->get()->first();
+//        if(blank($student)){
+//            return response()->json([
+//                'statusCode'=>400,
+//                'message'=>'يرجى إعادة المحاولة مرة أخرى',
+//            ]);
+//        }
+//        $absence= Absence::query()->create([
+//            'semester' => $request->semester,
+//            'date' =>  $request->date,
+//            'student_id' => $student->id,
+//            'typeAbsence' => $request->typeAbsence,
+//            'reason' =>  $request->reason,
+//
+//        ]);
+        return response()->json([
+            'statusCode'=>200,
+            'message'=>'تمت العملية بنجاح',
         ]);
-        return response()->json($absence);
     }
 
     /**
@@ -140,7 +179,7 @@ class AbsenceController extends Controller
      */
 
     //maria----------------------
-    public function show(Request $request)
+    public function showAbsence(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'nameSection' => 'required',
@@ -154,19 +193,23 @@ class AbsenceController extends Controller
         $className = Class_students::where('name','=',$request->class)->get()->first();
        // dd($className);
         $section = Sections::where([['name','=',$request->nameSection],['gender','=',$request->gender],['class_student_id','=',$className->id ]])->get()->first();
-        $MyOrder = DB::table('section_students as a')
-            ->join('students as s', 's.id', '=','a.students_id' )
-            ->select('s.id', 's.name','s.fatherName')
-            ->where('a.sections_id', '=',  $section->id)
-            ->where('a.semester', '=',  $request->semester)
-            ->groupBy('s.id', 's.name','s.fatherName')
-            ->get()->all();
+//        $MyOrder = DB::table('section_students as a')
+//            ->join('students as s', 's.id', '=','a.students_id' )
+//            ->select('s.id', 's.name','s.fatherName')
+//            ->where('a.sections_id', '=',  $section->id)
+//            ->where('a.semester', '=',  $request->semester)
+//            ->groupBy('s.id', 's.name','s.fatherName')
+//            ->get()->all();
+        $MyOrder=Students::where('section_id','=',$section->id)->get(['id','name','nickname','fatherName']);
         if($MyOrder==null ){
             return response()->json([
-                'message' => 'لا يوجد طلاب',
+                'data' => 'لا يوجد طلاب',
             ]);
         }
-        return response()->json($MyOrder);
+        return response()->json([
+            'data' => $MyOrder,
+            'statusCode'=>200,
+        ]);
     }
 
     /**
@@ -185,11 +228,37 @@ class AbsenceController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Absence  $absence
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, Absence $absence)
+    public function updateAbsenceReason(Request $request)
     {
-        //
+        if(blank($request->newReason)){
+            return response()->json(
+                ['message' => 'لا يوجد قيمة لتعديلها',
+                    'statusCode'=>400
+                ]
+            );
+        }
+
+        foreach ($request->newReason as $reason) {
+//            return response()->json([
+//                'statusCode' => 200,
+//                'message' =>$reason['typeAbsence'],
+//            ]);
+                $m = Absence::where('id', $reason['id'])->update(['reason' => $reason['reason'],'typeAbsence' => $reason['typeAbsence']]);
+
+                if($m == 0) {
+                    return response()->json([
+                        'statusCode' => 400,
+                        'message' => $m ,
+                    ]);
+            }
+        }
+        return response()->json(
+            ['statusCode' => 200,
+                'message' => 'تمت العملية'
+            ]
+        );
     }
 
     /**

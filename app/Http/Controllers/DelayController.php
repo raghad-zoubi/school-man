@@ -30,11 +30,11 @@ class DelayController extends Controller
             'allDay'=>290
         ]);
     }
-      
 
 
 
-  
+
+
     //عرض تفاصيل التاخيرات من قبل صاحبها
     public function show_student($kind)
     {
@@ -44,7 +44,7 @@ class DelayController extends Controller
                 ->get();
             return response()->json(
               $absm
-       
+
 
             );}
         else if($kind=='unreason'){
@@ -59,18 +59,25 @@ class DelayController extends Controller
 
     }
     //maria---------------------
-    public function index(Request $request)
+    public function indexDaley(Request $request)
     {
 
-        $student = Students::where([['name','=',$request->name],['fatherName','=',$request->fatherName]])->get()->first();
-        $date=Delay::where('student_id', '=', $student->id)->get()->first();
-        if($date==null){
+        $student = Students::where([['name','=',$request->name],['nickname','=',$request->nickname],['fatherName','=',$request->fatherName]])->get()->first();
+        if(blank($student)){
             return response()->json([
-                'message' => 'لا يوجد تأخيرات',
+                ['message' => 'طالب غير موجود']
+            ]);
+        }
+        $date=Delay::where('student_id', '=', $student->id)->get();
+        if(blank($date)){
+            return response()->json([
+                ['message' => 'لا يوجد تأخيرات']
             ]);
         }
         Carbon::setLocale('ar');
-        $nameDate=Carbon::parse($date->date)->dayName;;
+        foreach ($date as $record) {
+            $nameDate = Carbon::parse($record->date)->dayName;
+            $record->day = $nameDate;
 //        $MyOrder = DB::table('delays as d')
 //            ->join('student_times as s', 's.id', '=','d.student_time_id' )
 //            ->select('d.id', 'd.reason', 'd.duration','d.student_time_id','s.semester', 's.date')
@@ -82,8 +89,9 @@ class DelayController extends Controller
 //                'message' => 'لا يوجد تأخيرات',
 //            ]);
 //        }
-        $date->day=$nameDate;
-        return response()->json($date);
+
+        }
+        return response()->json($date,200);
     }
 
     /**
@@ -103,22 +111,32 @@ class DelayController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     //maria--------------------
-    public function store(Request $request)
+    public function storeDaley(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required', 'string',
+            'nickname' =>  'required','string',
             'fatherName' => 'required','string',
             'semester' => 'required',
             'date' => 'required','date',
-            'duration' => 'required','string',
+            'duration' =>['required'],//, 'regex:/^(?=.*\b(?:ساعه|ساعة|ساعتين|ساعات|دقيقة|دقيقه|دقيقتين|دقائق)\b).+$/'],
+               // [ 'required,regex:^(?=.*\d)(?=.*\b(?:hour|minutes)\b).+$^'],
             'reason' => 'required','string',
 
         ]);
         if ($validator->fails()) {
             return response()->json(['message'=>$validator->errors()->all()], Response::HTTP_UNPROCESSABLE_ENTITY);
+
         }
-        $student = Students::where([['name','=',$request->name],['fatherName','=',$request->fatherName]])->get()->first();
+       // ['nickname','=',$request->nickname]
+        $student = Students::where([['name','=',$request->name],['nickname','=',$request->nickname],['fatherName','=',$request->fatherName]])->get()->first();
         //dd($student->id);
+        if(blank($student)){
+            return response()->json([
+                'statusCode'=>400,
+                'message'=>'"طالب غير موجود"',
+            ]);
+        }
         $delay = Delay::query()->create([
             'semester' => $request->semester,
             'date' =>  $request->date,
@@ -127,7 +145,10 @@ class DelayController extends Controller
             'reason' =>  $request->reason,
 
         ]);
-        return response()->json($delay);
+        return response()->json([
+            'statusCode'=>200,
+            'message'=>'تمت العملية بنجاح',
+            ]);
     }
 
     /**

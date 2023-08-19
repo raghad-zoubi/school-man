@@ -42,11 +42,18 @@ class ClassStudentsController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Class_students  $class_students
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Class_students $class_students)
+
+    //maria------------------------------
+    public function showClass()
     {
-        //
+        $className = Class_students::get(['name','id']);
+
+        return response()->json([
+          'data' =>  $className,
+           'statusCode'=>200,
+        ]);
     }
 
     /**

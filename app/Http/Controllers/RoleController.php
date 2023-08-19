@@ -10,9 +10,9 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function indexRole()
     {
         $role=Role::all();
         return response()->json($role);

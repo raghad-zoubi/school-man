@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Section_student;
 use App\Models\Study_program;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StudyProgramController extends Controller
 {
@@ -107,5 +108,30 @@ class StudyProgramController extends Controller
     public function destroy(Study_program $study_program)
     {
         //
+    }
+    public function showProgramDash(Request $request)
+    {
+//class id,gender,section,day
+        $p = DB::table('study_programs as sp')
+            ->join('employees as emp', 'emp.id', 'sp.employee_id')
+            ->join('sections as se', 'se.id', 'sp.section_id')
+            ->join('subjects as sub', 'sp.subject_id', 'sub.id')
+            ->where([
+                ['sp.day', $request->day],
+                ['sp.section_id', $request->section],
+                ['se.gender', $request->gender],
+                ['se.class_student_id', $request->class]
+            ])
+            ->select('sub.name as subjects_name', 'emp.name as employee_name',)
+            ->orderBy('sp.period')->get();
+
+
+        return response()->json([
+            'data' => $p,
+            'statusCode' => 200,
+            'message' => 'success'
+        ]);
+
+
     }
 }

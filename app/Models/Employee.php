@@ -62,4 +62,13 @@ class Employee extends Model
     {
         return $this->hasMany(Study_program::class, 'employee_id');
     }
+
+
+    public $timestamps = true;
+
+    protected $hidden = [
+        'updated_at',
+
+
+    ];
 }

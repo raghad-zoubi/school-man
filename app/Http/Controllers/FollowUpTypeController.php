@@ -42,11 +42,16 @@ class FollowUpTypeController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Follow_up_type  $follow_up_type
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Follow_up_type $follow_up_type)
+    public function showType()
     {
-        //
+        $typeName = Follow_up_type::get(['name','id']);
+
+        return response()->json([
+            'data' =>  $typeName,
+            'statusCode'=>200,
+        ]);
     }
 
     /**

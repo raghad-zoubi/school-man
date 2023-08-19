@@ -22,9 +22,9 @@ class PermissionController extends Controller
             ->count();
 
         return response()->json([
-            'allCount' => $per,
+            'permission' => $per,
 
-
+            'statusCode'=>200
 
         ]);
 
@@ -36,9 +36,9 @@ class PermissionController extends Controller
 
         $per= Permission::where('student_id', auth()->user()->id)
             ->get();
-        return response()->json(
-           $per,
-          );
+        return response()->json([
+            'permission'=>$per,
+            'statusCode'=>200  ]);
     }
    //maria---------------
     public function index(Request $request)
