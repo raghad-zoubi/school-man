@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Notification;
+use App\Http\Requests\PremiumRequest;
 use
     App\Models\Class_students;
 use App\Models\Illness;
+use App\Models\Premium;
 use App\Models\Sections;
 use App\Models\Students;
 use App\Models\Subjects;
@@ -12,32 +15,66 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 
 
-
-
 class StudentsController extends Controller
 {
+    public function listStudentBudget()
+    {
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function indexStudent(Request $request)
-   {
-//     $t=Students::where('id', 11)->get()->first()->password;
+        $t = Students::query()->select('id', 'name', 'total')->get();
+       // $p = Premium::query()->where('students_id', $t->first()->id)->get('payment')->count();
+//
+
+        $st = DB::table('students as s')
+            ->join('premiums as pr', 's.id', 'pr.students_id')
+            ->select('pr.students_id', 's.id', 's.name', 's.total', DB::raw('SUM(pr.payment) as sum'))
+            ->groupBy('pr.students_id', 's.id', 's.name', 's.total')
+            ->get();
+        return response()->json($st);
+    }
+
+    public function addPayment(PremiumRequest $request, $StudentID)
+    {
+        $total = Students::query()->where('id', $StudentID)->select('total')->get()->first()->total;
+        $p = Premium::query()->where('students_id', $StudentID)->get()->sum('payment');
+
+//        $payment = Premium::query()->create([
+//            'payment' => $request->payment,
+//            'date' => $request->date,
+//            'student_id' => $StudentID,
+//        ]);
+        $payment = new Premium();
+        $payment->payment = $request->payment;
+        $payment->date = $request->date;
+        $payment->students_id = $StudentID;
+
+        if ($p + $request->payment > $total) {
+            return response()->json([
+                "message" => "المبلغ المدفوع تجاوز المبلغ الكلي",
+                "statusCode" => 400]);
+        } else {
+            $payment->save();
+            broadcast(new Notification("تم أضافة مبلغ الدفع ",$StudentID,"  تنبيه  ",));
+
+            return response()->json(["message" => "تمت إضافة المبلغ بنجاح",
+                "statusCode" => 200]);
+        }
+    }
+
+    public function indexStudent(Request $request){$t=Students::where('id', 11)->get()->first()->password;
 //
 //        $t2=decrypt($t);
 //        return $t2;
 //        dd($request->class);
 
         $class=Class_students::where('name','=',$request->class)->get()->first();
-      // dd($class);
+        // dd($class);
         $section = Sections::where([['name','=',$request->section],['gender','=',$request->gender],['class_student_id','=',$class->id]])->get()->first();
         // dd($section);
 //        if(blank($section)) {
@@ -45,32 +82,26 @@ class StudentsController extends Controller
 //                ['message' => 'لا يوجد ']
 //            ]);
 //        }
-         $student=Students::where('section_id', $section->id)->get(['id','name','nickname','fatherName','password']);
+        $student=Students::where('section_id', $section->id)->get(['id','name','nickname','fatherName','password']);
         if(blank($student)){
             return response()->json([
                 ['message' => 'لا يوجد طلاب']
-           ] );
+            ] );
         }
         foreach ($student as $record) {
-           // dd($record->password);
-           $t2=decrypt($record->password);
-           //$t2=$record->password;
+            // dd($record->password);
+//            $t2= decrypt($record->password);
+            $t2=$record->password;
             $record->password = $t2;
         }
-        return response()->json($student, 200);
-    }
-   //191622 num section database
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+        return response()->json($student, 200);}
+
     public function create()
     {
         //
     }
 
-      //maria------------------------------------------------
+    //maria------------------------------------------------
     public function storeStudent(Request $request)
     {
 
@@ -101,13 +132,14 @@ class StudentsController extends Controller
 //            =>'string',
             'date'=> 'required', 'date',
             'grandFather'=>'required','string',
+            'total'=>'required','numeric'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['message'=>$validator->errors()->all()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $password = Str::random(5);
-        $t2=encrypt($password);
+       // $t2=encrypt($password);
         //dd($t2);
 //        $student1 = Students::where([['name','=',$request->name],['nickname','=',$request->nickname],['fatherName','=',$request->fatherName]])->get()->first();
 //        if(!blank($student1)){
@@ -142,14 +174,15 @@ class StudentsController extends Controller
             'percentage'=>$request->percentage,
             'managementNotes'=>$request->managementNotes,
             'date'=>$request->date,
-            'password'=>($t2),
+            'total'=>$request->total,
+            'password'=>($password),
             //'section_id'=>1,
 
         ]);
 
         $illnesses=$request->illnesses;
-      // dd($illnesses);
-       if(!blank($illnesses)) {
+        // dd($illnesses);
+        if(!blank($illnesses)) {
             foreach ($illnesses as $illnesse) {
                 //dd($illnesse);
 //            if(!isset($illnesse->nameIllness) && !isset($illnesse->pharmaceutical) ){
@@ -165,12 +198,12 @@ class StudentsController extends Controller
 //                    ]);
 //                }
 //                else  {
-                    $addIllnesse = new Illness();
-                    $addIllnesse->nameIllness = $illnesse['nameIllness'];
-                    $addIllnesse->pharmaceutical = $illnesse['pharmaceutical'];
-                    $addIllnesse->student_id = $student->id;
-                    $addIllnesse->save();
-                }
+                $addIllnesse = new Illness();
+                $addIllnesse->nameIllness = $illnesse['nameIllness'];
+                $addIllnesse->pharmaceutical = $illnesse['pharmaceutical'];
+                $addIllnesse->student_id = $student->id;
+                $addIllnesse->save();
+            }
 
 //            }
         }
@@ -181,8 +214,8 @@ class StudentsController extends Controller
         $data["access_token"] = $tokenResult;
 
         return response()->json( [
-                'message'=>'تمت العملية بنجاح',
-                'statusCode'=>200
+            'message'=>'تمت العملية بنجاح',
+            'statusCode'=>200
         ]);
 
     }
@@ -204,11 +237,11 @@ class StudentsController extends Controller
             $tokenResult = $y->createToken('ProductsTolken')->plainTextToken;
 
             return response()->json([
-                'message' => 'successfully',
+                'message' => ' successfully',
                 'name'=>$y->name,
-                'id'=>$y->id,
                 'token' => $tokenResult,
-                'statusCode'=>200
+                'statusCode'=>200,
+                'id'=>1
 
             ]);
         }
@@ -218,29 +251,43 @@ class StudentsController extends Controller
 
     }
 
-     public function logout_student()
-     {
 
-         $result =Auth::user()->tokens()->delete();
-         if($result){
-             $response = response()->json('User logout successfully',200);
-         }
+    public function logout_student()
+    {
 
-         return $response;
-     }
+        $result =Auth::user()->tokens()->delete();
+        if($result){
+            $response = response()->json('User logout successfully',200);
+        }
+
+        return $response;
+    }
 
 
 //maria---------------------------------------------------
     public function showDetailStudent($studentId)
     {
-        $students=Students::where('id', $studentId)->get()->first();
-        $ill=Illness::where('student_id', $studentId)->get();
-        if(!blank($ill)){
-            $students['illnesses']=$ill;
-        }
-        return response()->json([$students], 200  );
-    }
+        $info = DB::table('students as st')
+            ->where('st.id', $studentId)->select(
+                'name', 'nickname', 'fatherName',
+                'workFather', 'motherName', 'workMother',
+                'grandFather', 'date', 'gender',
+                'newClass', 'schoolTransferred',
+                'average', 'placeOfBirth', 'birthDate',
+                'brothersNumber', 'address', 'matherPhone',
+                'fatherPhone', 'livesStudent', 'landPhone',
+                'character', 'transportationType', 'result',
+                'percentage', 'managementNotes')->get();
+        $data['data']=$info;
+        $ill = DB::table('illnesses as il')->
+        where('il.student_id', $studentId)
+            ->select('nameIllness', 'pharmaceutical')->get();
 
+        // $ill=Illness::where('student_id', $studentId)->get();
+        $data['illnesses']=$ill;
+
+        return response()->json($data, 200  );
+    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -250,11 +297,7 @@ class StudentsController extends Controller
     public function allStudent()
     {
         $student=Students::get(['id','name','nickname','fatherName']);
-//        if(blank($student)){
-//            return response()->json([
-//                ['message' => 'لا يوجد طلاب']
-//            ]);
-//        }
+
         return response()->json($student, 200);
     }
 

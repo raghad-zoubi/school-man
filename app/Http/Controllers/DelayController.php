@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Notification;
 use App\Models\Delay;
 use App\Models\Student_time;
 use App\Models\Students;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class DelayController extends Controller
-{//عرض التاخيرات من قبل صاحبها
+{ //عرض التاخيرات من قبل صاحبها
     public function index_student()
     {
         $all= Delay::where('student_id', auth()->user()->id)
@@ -35,7 +36,7 @@ class DelayController extends Controller
 
 
 
-    //عرض تفاصيل التاخيرات من قبل صاحبها
+//عرض تفاصيل التاخيرات من قبل صاحبها
     public function show_student($kind)
     {
         if($kind=='reason'){
@@ -43,7 +44,7 @@ class DelayController extends Controller
                 ->where('reason','!=',NULL)
                 ->get();
             return response()->json(
-              $absm
+                $absm
 
 
             );}
@@ -52,8 +53,8 @@ class DelayController extends Controller
                 ->where('reason',NULL)
                 ->get();
             return response()->json(
-              $absunm
-              );
+                $absunm
+            );
         }
 
 
@@ -119,8 +120,9 @@ class DelayController extends Controller
             'fatherName' => 'required','string',
             'semester' => 'required',
             'date' => 'required','date',
-            'duration' =>['required'],//, 'regex:/^(?=.*\b(?:ساعه|ساعة|ساعتين|ساعات|دقيقة|دقيقه|دقيقتين|دقائق)\b).+$/'],
-               // [ 'required,regex:^(?=.*\d)(?=.*\b(?:hour|minutes)\b).+$^'],
+            'duration' =>['required'],
+//            'regex:/\b(ساعه|ساعة|ساعتين|ساعات|دقيقة|دقيقه|دقيقتين|دقائق)\b/',//, 'regex:/^(?=.*\b(?:ساعه|ساعة|ساعتين|ساعات|دقيقة|دقيقه|دقيقتين|دقائق)\b).+$/'],
+            // [ 'required,regex:^(?=.*\d)(?=.*\b(?:hour|minutes)\b).+$^'],
             'reason' => 'required','string',
 
         ]);
@@ -128,7 +130,7 @@ class DelayController extends Controller
             return response()->json(['message'=>$validator->errors()->all()], Response::HTTP_UNPROCESSABLE_ENTITY);
 
         }
-       // ['nickname','=',$request->nickname]
+        // ['nickname','=',$request->nickname]
         $student = Students::where([['name','=',$request->name],['nickname','=',$request->nickname],['fatherName','=',$request->fatherName]])->get()->first();
         //dd($student->id);
         if(blank($student)){
@@ -145,10 +147,13 @@ class DelayController extends Controller
             'reason' =>  $request->reason,
 
         ]);
+        //broadcast(new Notification("تم أضافةتأخير ", 1,"  تنبيه  ",));
+        broadcast(new Notification("تم إضافة تأخير ", $student->id,"  تنبيه  ",));
+
         return response()->json([
             'statusCode'=>200,
             'message'=>'تمت العملية بنجاح',
-            ]);
+        ]);
     }
 
     /**

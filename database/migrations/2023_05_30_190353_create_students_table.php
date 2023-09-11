@@ -15,9 +15,10 @@ class CreateStudentsTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-
             $table->string('name');
+            $table->string('nickname');
             $table->string('fatherName');
+            $table->string('grandFather');
             $table->string('workFather');
             $table->string('motherName');
             $table->string('workMother');
@@ -38,9 +39,11 @@ class CreateStudentsTable extends Migration
             $table->double('result')->nullable();
             $table->decimal('percentage')->nullable();
             $table->string('managementNotes')->nullable();
+            $table->date('date');
             $table->string('password')->unique();
-            $table->foreignId('section_id')->constrained('sections')->nullable();
-            $table->timestamps();
+            $table->bigInteger('total');
+            $table->foreignId('section_id')->nullable()->constrained('sections')->cascadeOnDelete();
+               $table->timestamps();
         });
     }
 

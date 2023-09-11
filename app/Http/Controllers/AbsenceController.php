@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Notification;
 use App\Models\Absence;
 use App\Models\Class_students;
 use App\Models\Sections;
@@ -14,8 +15,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AbsenceController extends Controller
+
 {
-    //عرض غيايات من قبل صاحبها
+//عرض غيايات من قبل صاحبها
     public function index_student()
     {
         $all= Absence::where('student_id', auth()->user()->id)
@@ -35,7 +37,7 @@ class AbsenceController extends Controller
         ]);
 
     }
-    //عرض تفاصيل الغياب من قبل صاحبها
+//عرض تفاصيل الغياب من قبل صاحبها
     public function show_student($kind)
     {
         if($kind=='reason'){
@@ -43,7 +45,7 @@ class AbsenceController extends Controller
                 ->where('reason','!=',NULL)
                 ->get();
             return response()->json(
-           $absm
+                $absm
 
 
             );}
@@ -52,7 +54,7 @@ class AbsenceController extends Controller
                 ->where('reason',NULL)
                 ->get();
             return response()->json(
-             $absunm );
+                $absunm );
         }
 
 
@@ -120,10 +122,10 @@ class AbsenceController extends Controller
 //            'nickname' => 'required', 'string',
 //            'fatherName' => 'required','string',
 //            'typeAbsence' => 'required','boolean',
-           'semester' => 'required',
+            'semester' => 'required',
 //            'reason' => 'string',
 //            'date' => 'required','date'
-               'rows'=>'required'
+            'rows'=>'required'
         ]);
         if ($validator->fails()) {
             return response()->json(['message'=>$validator->errors()->all()], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -148,9 +150,11 @@ class AbsenceController extends Controller
                 'reason' =>$row['reason'],
                 'date' =>now()->format('Y-m-d'),
                 'student_id' => $row['student_id']
+
             ]);
+        broadcast(new Notification("تم أضافة غياب ", $row['student_id'],"  تنبيه  ",));
         }
- //        $student = Students::where([['name','=',$request->name],['fatherName','=',$request->fatherName]])->get()->first();
+        //        $student = Students::where([['name','=',$request->name],['fatherName','=',$request->fatherName]])->get()->first();
 //        if(blank($student)){
 //            return response()->json([
 //                'statusCode'=>400,
@@ -165,18 +169,15 @@ class AbsenceController extends Controller
 //            'reason' =>  $request->reason,
 //
 //        ]);
+        //
+
         return response()->json([
             'statusCode'=>200,
             'message'=>'تمت العملية بنجاح',
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Absence  $absence
-     * @return \Illuminate\Http\JsonResponse
-     */
+
 
     //maria----------------------
     public function showAbsence(Request $request)
@@ -191,7 +192,7 @@ class AbsenceController extends Controller
             return response()->json(['message'=>$validator->errors()->all()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $className = Class_students::where('name','=',$request->class)->get()->first();
-       // dd($className);
+        // dd($className);
         $section = Sections::where([['name','=',$request->nameSection],['gender','=',$request->gender],['class_student_id','=',$className->id ]])->get()->first();
 //        $MyOrder = DB::table('section_students as a')
 //            ->join('students as s', 's.id', '=','a.students_id' )
@@ -245,13 +246,13 @@ class AbsenceController extends Controller
 //                'statusCode' => 200,
 //                'message' =>$reason['typeAbsence'],
 //            ]);
-                $m = Absence::where('id', $reason['id'])->update(['reason' => $reason['reason'],'typeAbsence' => $reason['typeAbsence']]);
+            $m = Absence::where('id', $reason['id'])->update(['reason' => $reason['reason'],'typeAbsence' => $reason['typeAbsence']]);
 
-                if($m == 0) {
-                    return response()->json([
-                        'statusCode' => 400,
-                        'message' => $m ,
-                    ]);
+            if($m == 0) {
+                return response()->json([
+                    'statusCode' => 400,
+                    'message' => $m ,
+                ]);
             }
         }
         return response()->json(

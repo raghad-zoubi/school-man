@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Notification;
 use App\Models\Notes;
 use App\Models\Students;
 use App\Models\Subjects;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -15,8 +17,14 @@ class NotesController extends Controller
     //عرض ملاحظاتي
     public function show_students($type)
     {
-        $notes= Notes::where('student_id', auth()->user()->id)->
-        where('typeNote',$type)->get();
+        $notes= DB::table('notes')
+            ->join('subjects', 'notes.subject_id', '=', 'subjects.id')->
+
+
+        where('student_id', auth()->user()->id)->
+        where('typeNote',$type)->
+            select('subjects.name','notes.semester',
+                'notes.date','notes.text')->get();
 
         return response()->json($notes);
 
@@ -27,11 +35,6 @@ class NotesController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create(Request $request)
     {
         $validator=Validator::make($request->all(),[
@@ -39,7 +42,9 @@ class NotesController extends Controller
             'semester'=>'required|max:100|string',
             'text'=>'required|max:250',
             'date'=>'required|date',
-            'student'=>'required',
+            'name'=>'required',
+            'nickname'=>'required',
+            'fatherName'=>'required',
             'subject'=>'required|max:50|string',
         ]);
         if($validator->fails()){
@@ -51,17 +56,17 @@ class NotesController extends Controller
             $today=Carbon::now();
             $now=Carbon::parse($today);
             $to=Carbon::parse($date);
-            $time=$to->diffInDays($now);
-            if($time> 0)
+            $time=$now->diffInDays($to);
+            if($time < 0)
             {
                 return response()->json(['message'=>'this is future history'],400);
             }
-            if($time< -364)
+            if($time> 364)
             {
                 return response()->json(['message'=>'wrong this history of a year ago'],400);
             }
             ///
-            $student=Students::where('name',$request->student)->first();
+            $student=Students::where([['name','=',$request->name],['nickname','=',$request->nickname],['fatherName','=',$request->nickname]])->first();
             if($student==null)
             {
                 return response()->json(['message'=>'error  student not found'],400);
@@ -81,17 +86,13 @@ class NotesController extends Controller
                 'student_id'=>$student->id,
                 'subject_id'=>$subject->id,
             ]);
-    
+            broadcast(new Notification("تمت أضافة ملاحظات  ", $student->id,"  تنبيه  ",));
+
             return response()->json($new,200);
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         //

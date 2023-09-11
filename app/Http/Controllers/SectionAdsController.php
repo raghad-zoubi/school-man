@@ -25,10 +25,11 @@ class SectionAdsController extends Controller
 
 else
     $result2= DB::table('section_ads')
-        ->join('section_students', 'section_ads.sections_id', '=', 'section_students.sections_id')
-        ->join('sections', 'section_ads.sections_id', '=', 'sections.id')
+
+        ->join('students', 'section_ads.sections_id', '=', 'students.section_id')
+       // ->join('sections', 'section_ads.sections_id', '=', 'sections.id')
         ->join('ads','section_ads.ad_id','=','ads.id')
-        ->where('section_students.students_id','=',auth()->user()->id)
+        ->where('students.id','=',auth()->user()->id)
         ->where('ads.type','=',$type)
         ->select('section_ads.*','ads.*')
         ->get();

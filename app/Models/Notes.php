@@ -31,7 +31,7 @@ class Notes extends Model
     return $this->belongsTo(\App\Models\Students::class);
 }
 
-public function subject()
+public function subject(): \Illuminate\Database\Eloquent\Relations\BelongsTo
 {
     return $this->belongsTo(\App\Models\subjects::class);
 }

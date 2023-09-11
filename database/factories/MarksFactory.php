@@ -25,6 +25,7 @@ class MarksFactory extends Factory
             'follow_up_type_id' => Follow_up_type::factory(),
             'subject_id' => Subjects::factory(),
             'date'=>$this->faker->dateTimeThisYear(),
+
         ];
     }
 }

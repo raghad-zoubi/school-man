@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+
 class EmployeeRequest extends FormRequest
 {
 
@@ -12,7 +13,6 @@ class EmployeeRequest extends FormRequest
     {
         return true;
     }
-
 
 
     public function rules()
@@ -27,23 +27,23 @@ class EmployeeRequest extends FormRequest
             'nationality' => ['required', 'string'],
             'idNumber' => ['required', 'min:0', 'regex:/^[0-9]{11}$/', Rule::unique('employees'), 'numeric'],
             'familyStatus' => ['required', 'string'],
-            'husbandName' => ['regex:/^[أ-يa-zA-Z\s]+$/u'],
-            'husbandWork' => ['regex:/^[أ-يa-zA-Z\s]+$/u'],
-            'childrenNumber' => ['numeric'],
+            'husbandName' => ['nullable','regex:/^[أ-يa-zA-Z\s]+$/u'],
+            'husbandWork' => ['nullable','regex:/^[أ-يa-zA-Z\s]+$/u'],
+            'childrenNumber' => ['nullable','numeric'],
             'address' => ['required', 'string'],
-            'landPhone' => ['integer', 'digits:7', Rule::unique('employees')],
+            'landPhone' => ['nullable','integer', 'digits:7', Rule::unique('employees')],
             'mobilePhone' => ['required', 'regex:/^09\d{8}$/', Rule::unique('employees')],
             'certificate' => ['required', 'string'],
             'jurisdiction' => ['required', 'string'],
             'language' => ['required', 'string'],
-            'computerSkills' => [],
-            'otherSkills' => [],
+            'computerSkills' => ['nullable'],
+            'otherSkills' => ['nullable',],
             'socialInsurance' => ['required', 'boolean'],
-            'lastSalaryReceived' => ['integer'],
+            'lastSalaryReceived' => ['integer','nullable',],
             'expectedSalary' => ['required', 'integer'],
             'interview' => ['required', 'date_format:Y-m-d\TH:i'],
             'workYouWish' => ['required'],
-            'managementNotes' => [],
+            'managementNotes' => ['nullable',],
 
         ];
     }
@@ -99,8 +99,8 @@ class EmployeeRequest extends FormRequest
             'language.required' => 'هذا الحقل مطلوب',
 
             'socialInsurance.required' => 'هذا الحقل مطلوب',
-
             'lastSalaryReceived.integer' => 'هذا الحقل يجب أن يحتوي على أرقام فقط',
+
             'expectedSalary.required' => 'هذا الحقل مطلوب',
             'expectedSalary.integer' => 'هذا الحقل يجب أن يحتوي على أرقام فقط',
 

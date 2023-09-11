@@ -6,6 +6,7 @@ use App\Models\Follow_up_type;
 use Illuminate\Http\Request;
 
 class FollowUpTypeController extends Controller
+
 {
     /**
      * Display a listing of the resource.

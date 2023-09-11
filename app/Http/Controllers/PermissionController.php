@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Notification;
 use App\Models\Permission;
 use App\Models\Student_time;
 use App\Models\Students;
@@ -12,9 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class PermissionController extends Controller
-{
 
-    //عرض الاذونات من قبل صاحبها
+{    //عرض الاذونات من قبل صاحبها
 
     public function index_student()
     {
@@ -22,9 +22,9 @@ class PermissionController extends Controller
             ->count();
 
         return response()->json([
-            'permission' => $per,
+            'allCount' => $per,
 
-            'statusCode'=>200
+
 
         ]);
 
@@ -36,36 +36,43 @@ class PermissionController extends Controller
 
         $per= Permission::where('student_id', auth()->user()->id)
             ->get();
-        return response()->json([
-            'permission'=>$per,
-            'statusCode'=>200  ]);
+        return response()->json(
+            $per,
+        );
     }
-   //maria---------------
-    public function index(Request $request)
+    //maria---------------
+    public function indexPermission(Request $request)
     {
         $student = Students::where([['name','=',$request->name],['fatherName','=',$request->fatherName]])->get()->first();
-        $date=Permission::where('student_id', '=', $student->id)->get()->first();
-        if($date==null){
+        if(blank($student)){
             return response()->json([
-                'message' =>  'لا يوجد أذونات',
+                ['message' => 'طالب غير موجود'],
+            ]);
+        }
+        $date=Permission::where('student_id', '=', $student->id)->get();
+        if(blank($date)){
+            return response()->json([
+                ['message' =>  'لا يوجد أذونات'],
             ]);
         }
         Carbon::setLocale('ar');
-        $nameDate=Carbon::parse($date->date)->dayName;
+        foreach ($date as $record) {
+            $nameDate = Carbon::parse($record->date)->dayName;
+            $record->day = $nameDate;
 //        $MyOrder = DB::table('permissions as p')
 //            ->join('student_times as s', 's.id', '=','p.student_time_id' )
 //            ->select('p.id', 'p.reason','p.student_time_id','s.semester', 's.date')
 //            ->where('s.student_id', '=', $student->id)
 //            ->groupBy('p.id','p.reason','s.semester', 's.date','p.student_time_id')
 //            ->get()->first();
-        // dd($MyOrder->date);
+            // dd($MyOrder->date);
 //        if($date==null ){
 //            return response()->json([
 //                'message' => 'لا يوجد أذونات',
 //            ]);
 //        }
-        $date->day=$nameDate;
-        return response()->json($date);
+        }
+        return response()->json($date,200);
 
     }
 
@@ -87,10 +94,12 @@ class PermissionController extends Controller
      */
 
     //maria---------------------
-    public function store(Request $request)
+    public function storePermission(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'name' => 'required', 'string',
+            'nickname' => 'required', 'string',
             'fatherName' => 'required','string',
             'semester' => 'required',
             'date' => 'required','date',
@@ -99,16 +108,26 @@ class PermissionController extends Controller
         if ($validator->fails()) {
             return response()->json(['message'=>$validator->errors()->all()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        $student = Students::where([['name','=',$request->name],['fatherName','=',$request->fatherName]])->get()->first();
+        $student = Students::where([['name','=',$request->name],['nickname','=',$request->nickname],['fatherName','=',$request->fatherName]])->get()->first();
         //dd($student->id);
-
+        if(blank($student)){
+            return response()->json([
+                'statusCode'=>400,
+                'message'=>'يرجى إعادة المحاولة مرة أخرى',
+            ]);
+        }
         $permission = Permission::query()->create([
             'semester' => $request->semester,
             'date' =>  $request->date,
             'student_id' => $student->id,
             'person' =>  $request->person,
         ]);
-        return response()->json($permission);
+        broadcast(new Notification("تم طلب إذن ",$student->id ,"  تنبيه  ",));
+
+        return response()->json([
+            'statusCode'=>200,
+            'message'=>'تمت العملية بنجاح',
+        ]);
     }
 
     /**

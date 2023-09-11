@@ -21,15 +21,14 @@ class WorkingPapersSectionController extends Controller
 //        ['name' => 'records'],
 //        ['name' => 'testpaper'],
 //        ['name' => 'workpaper'],
-//        ['name' => 'text'],
 
 
         $result2= DB::table('working_papers_sections')
-            ->join('section_students', 'working_papers_sections.section_id', '=', 'section_students.sections_id')
-            ->join('sections', 'working_papers_sections.section_id', '=', 'sections.id')
+            ->join('students', 'working_papers_sections.section_id', '=', 'students.section_id')
+          //  ->join('sections', 'working_papers_sections.section_id', '=', 'sections.id')
             ->join('working_papers','working_papers_sections.working_papers_id','=','working_papers.id')
             ->join('working_papers_types','working_papers.working_papers_type_id','=','working_papers_types.id')
-            ->where('section_students.students_id','=',auth()->user()->id)
+            ->where('students.id','=',auth()->user()->id)
             ->where('working_papers_types.name','=',$type)
             ->select('working_papers.*')
             ->get();
@@ -46,6 +45,7 @@ class WorkingPapersSectionController extends Controller
     {
         //
     }
+
     public function create(Request $request)
     {
         $validator=Validator::make($request->all(),[
@@ -62,35 +62,37 @@ class WorkingPapersSectionController extends Controller
             $class=$request->input('class');
             $clas=Class_students::where('name',$class)->first();
             if($clas==null){
-                return response()->json(['message'=>'wrong data'],400);
+                return response()->json(['message'=>'wrong data class'],400);
             }
             $type=$request->input('type');
             $typ=Working_papers_type::where('name',$type)->first();
             if($typ==null){
-                return response()->json(['message'=>'this type was previously added'],400);
+                return response()->json(['message'=>'this type not add'],400);
             }
 
             $sub=Subjects::where('name',$request->input('subject'))->first();
             if($sub==null){
-                return response()->json(['message'=>'wrong data'],400);
+                return response()->json(['message'=>'wrong data subject'],400);
             }
-            $fil=time(). "-". $request->name ."-".$request->image->extension();
-            $fil=$request->file('file')->store('workpapersFile','public');
+            $fil=time(). "-". $request->name ."-".$request->file->extension();
+            $fil=$request->file('file')->store('workpapersFile','public');     ////
             $request->file->move(public_path('workpapersFile'),$fil);
             $new=Working_papers::create([
-            //    'class_student_id'=>$class->id,
-                'text'=>$request->input('name'),
+                //    'class_student_id'=>$class->id,
+                'text'=>$fil,
+                'title'=>"newwwww",
                 'subject_id'=>$sub->id,
                 'working_papers_type_id'=>$typ->id,
             ]);
+
             $sections=$request->sections;
-        //    if($request->sections!=null)
-        if($sections!=null)
+            //    if($request->sections!=null)
+            if($sections!=null)
             {
-          //      $section=json_decode($request['sections'],true);
+                //  $section=json_decode($request['sections'],true);
                 foreach ($sections as $s)
                 {
-                    $section=Sections::where('name',$s)->first();
+                    $section=Sections::where('name',$s)->where('class_student_id',$clas->id)->where('gender',$request->input('gender'))->first();
                     $new_work_section=Working_papers_section::create([
                         'section_id'=>$section->id,
                         'working_papers_id'=>$new->id,
@@ -98,18 +100,12 @@ class WorkingPapersSectionController extends Controller
                 }
             }
             else{
-                return response()->json(['message'=>'wrong data'],400);
+                return response()->json(['message'=>'wrong data null'],400);
             }
             return response()->json($new,200);
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         //

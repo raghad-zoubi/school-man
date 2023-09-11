@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Class_students;
 use Illuminate\Http\Request;
 
@@ -51,8 +52,8 @@ class ClassStudentsController extends Controller
         $className = Class_students::get(['name','id']);
 
         return response()->json([
-          'data' =>  $className,
-           'statusCode'=>200,
+            'data' =>  $className,
+            'statusCode'=>200,
         ]);
     }
 

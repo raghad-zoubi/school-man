@@ -64,11 +64,5 @@ class Employee extends Model
     }
 
 
-    public $timestamps = true;
 
-    protected $hidden = [
-        'updated_at',
-
-
-    ];
 }

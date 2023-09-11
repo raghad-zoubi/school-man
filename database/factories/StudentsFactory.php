@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Sections;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StudentsFactory extends Factory
@@ -17,6 +18,7 @@ class StudentsFactory extends Factory
 
         return [
             'name' => $this->faker->name(),
+            'nickname' => $this->faker->name(),
             'fatherName' => $this->faker->name(),
             'workFather' => $this->faker->paragraph(1, true),
             'motherName' => $this->faker->name(),
@@ -39,8 +41,10 @@ class StudentsFactory extends Factory
             'percentage' => $this->faker->numberBetween(0, 100),
             'managementNotes' => $this->faker->paragraph(1, true),
             'password' => $this->faker->password(),
-
-
+            'section_id'=>Sections::factory(),
+           'grandFather'=> $this->faker->name(),
+            'total' => $this->faker  ->numberBetween(100000, 1000000),
+            'date'=>$this->faker->dateTimeThisYear()
         ];
     }
 }

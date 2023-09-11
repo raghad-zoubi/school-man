@@ -13,6 +13,7 @@ class Working_papers extends Model
     public $timestamps = true;
     protected $fillable = [
     'text',
+    'title',
     'subject_id',
     'working_papers_type_id',
 ];

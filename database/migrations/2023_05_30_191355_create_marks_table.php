@@ -19,14 +19,11 @@ class CreateMarksTable extends Migration
             $table->double('studentMark');
             $table->double('lowMark');
             $table->double('highMark');
-
             $table->timestamps();
-
             $table->foreignId('student_id')->constrained('students')->cascadeOnDelete();
             $table->foreignId('follow_up_type_id')->constrained('follow_up_types')->cascadeOnDelete();
             $table->foreignId('subject_id')->constrained('subjects')->cascadeOnDelete();
-            $table->date('date');
-        });
+            $table->date('date'); });
     }
 
     /**

@@ -18,11 +18,7 @@ class WorkingPapersTypeController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create(Request $request)
     {
         $validator=Validator::make($request->all(),[
@@ -56,16 +52,24 @@ class WorkingPapersTypeController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Working_papers_type  $working_papers_type
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Working_papers_type $working_papers_type)
+
+    public function show()
     {
-        //
+        $all=Working_papers_type::all();
+        $respon=null;
+        foreach($all as $one){
+            $respon[]=([
+                'id'=>$one->id,
+                'name'=>$one->name,
+            ]);
+
+        }
+        if($respon==null){
+            return response()->json(['message'=>'there are no type'],400);
+        }
+        return response()->json($respon,200);
     }
+
 
     /**
      * Show the form for editing the specified resource.
